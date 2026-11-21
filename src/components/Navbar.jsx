@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, LogOut, LayoutDashboard, User } from 'lucide-react';
+import { LogOut, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
 
 export default function Navbar() {
@@ -12,66 +12,73 @@ export default function Navbar() {
   };
 
   const getDashboardLink = () => {
-    switch (role) {
+    const activeRole = role || user?.role;
+    switch (activeRole) {
       case 'super_admin': return '/super-admin';
       case 'admin': return '/admin';
       case 'vendeur': return '/vendeur';
       case 'client': return '/client';
-      default: return '/';
+      default: return '/client';
     }
   };
 
   return (
-    <nav className="bg-slate-900 text-white shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 text-xl font-bold text-emerald-400">
-          <ShoppingBag className="w-6 h-6" />
-          <span>Takechap</span>
-        </Link>
-
-        <div className="flex items-center gap-4">
-          <Link to="/" className="text-sm text-slate-300 hover:text-white transition">
-            Catalogue
+    <header className="w-full bg-white border-slate-200">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 grid grid-cols-3 items-center">
+        
+        {/* GAUCHE : Logo Takechap en noir */}
+        <div className="flex justify-start">
+          <Link
+            to="/"
+            className="group relative inline-block text-2xl font-extrabold tracking-tight text-black transition-transform duration-300 ease-out hover:scale-105 active:scale-95"
+          >
+            <span>Takechap</span>
+            <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-0.5 bg-black" />
           </Link>
+        </div>
 
+        {/* CENTRE : Se connecter en vert -> Se déconnecter en rouge si connecté */}
+        <div className="flex justify-center">
           {!user ? (
-            <>
-              <Link to="/login" className="text-sm text-slate-300 hover:text-white transition">
-                Connexion
-              </Link>
-              <Link
-                to="/register"
-                className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-sm px-4 py-2 rounded-lg transition"
-              >
-                Inscription Client
-              </Link>
-            </>
+            <Link
+              to="/login"
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm px-6 py-2.5 rounded-full shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md hover:shadow-emerald-600/25 active:translate-y-0"
+            >
+              Se connecter
+            </Link>
           ) : (
-            <>
-              <Link
-                to={getDashboardLink()}
-                className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 text-sm px-3 py-2 rounded-lg transition"
-              >
-                <LayoutDashboard className="w-4 h-4" />
-                <span>Mon Espace ({role})</span>
-              </Link>
-
-              <span className="hidden sm:flex items-center gap-1 text-xs text-slate-400">
-                <User className="w-3.5 h-3.5" />
-                {user.prenom}
-              </span>
-
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-1 text-sm text-rose-400 hover:text-rose-300 transition cursor-pointer"
-                title="Déconnexion"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-semibold text-sm px-6 py-2.5 rounded-full shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md hover:shadow-red-600/25 active:translate-y-0 cursor-pointer"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Se déconnecter</span>
+            </button>
           )}
         </div>
-      </div>
-    </nav>
+
+        {/* DROITE : S'inscrire en noir -> Espace (vers l'espace client/rôle) si connecté */}
+        <div className="flex justify-end">
+          {!user ? (
+            <Link
+              to="/register"
+              className="bg-black hover:bg-neutral-800 text-white font-semibold text-sm px-6 py-2.5 rounded-full shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/25 active:translate-y-0"
+            >
+              S'inscrire
+            </Link>
+          ) : (
+            <Link
+              to={getDashboardLink()}
+              className="flex items-center gap-2 bg-black hover:bg-neutral-800 text-white font-semibold text-sm px-6 py-2.5 rounded-full shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/25 active:translate-y-0"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              <span>Espace</span>
+            </Link>
+          )}
+        </div>
+
+      </nav>
+    </header>
   );
 }
