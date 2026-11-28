@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, Eye, BadgeCheck, Circle, RotateCcw } from 'lucide-react';
+import { Heart, BadgeCheck, Circle, RotateCcw } from 'lucide-react';
 
 const CATEGORIES = [
   'Vêtements',
@@ -65,7 +65,7 @@ export default function AllProduit({
 
   if (loading) {
     return (
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-end mb-6">
           <h2 className="inline-flex items-center gap-2.5 text-2xl sm:text-4xl font-extrabold text-slate-900 text-right">
             <Link
@@ -114,7 +114,7 @@ export default function AllProduit({
   const hasFilter = Boolean(trimmedSearch || selectedCategory);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+    <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 space-y-10">
       {/* Titre dynamique aligné à droite + réinitialisation si filtre actif */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -148,8 +148,8 @@ export default function AllProduit({
 
           return (
             <div key={category} className="space-y-4">
-              <div className="flex items-center gap-4">
-                <h3 className="text-lg sm:text-xl font-bold text-slate-900 shrink-0">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <h3 className="text-base sm:text-xl font-bold text-slate-900 shrink-0">
                   {category}
                 </h3>
                 <div className="flex-1 border-b-2 border-dotted border-slate-300" />
@@ -165,7 +165,7 @@ export default function AllProduit({
                     : `Aucun produit dans ${category} pour le moment.`}
                 </p>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
                   {items.map((produit) => (
                     <article
                       key={produit.id}
@@ -174,7 +174,7 @@ export default function AllProduit({
                       <div>
                         <div
                           onClick={() => handleOpenProduit(produit)}
-                          className="h-44 bg-slate-100 flex items-center justify-center overflow-hidden cursor-pointer"
+                          className="h-32 sm:h-44 bg-slate-100 flex items-center justify-center overflow-hidden cursor-pointer"
                         >
                           {produit.image_url ? (
                             <img
@@ -187,56 +187,45 @@ export default function AllProduit({
                           )}
                         </div>
 
-                        <div className="p-4 space-y-1.5">
-                          <div className="flex items-center gap-1 text-xs font-medium text-emerald-700">
-                            <span>
+                        <div className="p-2.5 sm:p-4 space-y-1 sm:space-y-1.5">
+                          <div className="flex items-center gap-1 text-[11px] sm:text-xs font-medium text-emerald-700">
+                            <span className="truncate">
                               {produit.vendeur?.nom_boutique || 'Boutique Takechap'}
                             </span>
                             {produit.vendeur?.est_verifie && (
-                              <BadgeCheck className="w-3.5 h-3.5" />
+                              <BadgeCheck className="w-3.5 h-3.5 shrink-0" />
                             )}
                           </div>
 
                           <h4
                             onClick={() => handleOpenProduit(produit)}
-                            className="font-bold text-slate-900 line-clamp-1 cursor-pointer hover:text-emerald-700 transition"
+                            className="text-xs sm:text-base font-bold text-slate-900 line-clamp-1 cursor-pointer hover:text-emerald-700 transition"
                           >
                             {produit.nom}
                           </h4>
 
                           {produit.description && (
-                            <p className="text-xs text-slate-500 line-clamp-2">
+                            <p className="text-[11px] sm:text-xs text-slate-500 line-clamp-2">
                               {produit.description}
                             </p>
                           )}
                         </div>
                       </div>
 
-                      <div className="px-4 pb-4 pt-2 flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            aria-label="Ajouter aux favoris"
-                            className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition cursor-pointer"
-                          >
-                            <Heart className="w-3.5 h-3.5" />
-                          </button>
+                      <div className="px-2.5 sm:px-4 pb-3 sm:pb-4 pt-2 flex items-center justify-between gap-1.5 sm:gap-2">
+                        <button
+                          type="button"
+                          aria-label="Ajouter aux favoris"
+                          className="p-1.5 sm:p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition cursor-pointer shrink-0"
+                        >
+                          <Heart className="w-3.5 h-3.5" />
+                        </button>
 
-                          <button
-                            type="button"
-                            onClick={() => handleOpenProduit(produit)}
-                            aria-label="Voir le détail"
-                            className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition cursor-pointer"
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-
-                        <div className="text-right">
-                          <span className="block text-sm sm:text-base font-extrabold text-slate-900">
+                        <div className="text-right min-w-0">
+                          <span className="block text-xs sm:text-base font-extrabold text-slate-900 truncate">
                             {Number(produit.prix).toLocaleString()} FCFA
                           </span>
-                          <span className="text-xs text-slate-500">
+                          <span className="text-[11px] sm:text-xs text-slate-500">
                             Stock : {produit.stock}
                           </span>
                         </div>

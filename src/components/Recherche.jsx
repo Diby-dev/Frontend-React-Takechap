@@ -101,7 +101,7 @@ export default function Recherche({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Rechercher un produit, une boutique, un service..."
+                placeholder="Recherche"
                 className="w-full bg-transparent text-slate-800 placeholder-slate-500 text-sm sm:text-base focus:outline-none"
               />
               {searchQuery && (

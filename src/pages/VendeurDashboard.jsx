@@ -235,75 +235,73 @@ export default function VendeurDashboard() {
     'Vendeur';
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-14">
+    <div className="min-h-screen bg-slate-50 pb-12">
       {/* Barre supérieure Espace Vendeur */}
       <header className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 min-w-0">
             <Link
               to="/"
-              className="text-2xl font-extrabold tracking-tight text-black"
+              className="text-xl sm:text-2xl font-extrabold tracking-tight text-black truncate"
             >
               Takechap
             </Link>
-            <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">
-              Espace Vendeur
-            </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <Link
               to="/"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 transition"
+              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 transition"
             >
-              <Home className="w-4 h-4" />
+              <Home className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Boutique</span>
             </Link>
 
             <button
               type="button"
               onClick={handleLogout}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-red-600 hover:bg-red-500 text-white transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-red-600 hover:bg-red-500 text-white transition cursor-pointer"
             >
-              <LogOut className="w-4 h-4" />
-              <span>Se déconnecter</span>
+              <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline sm:inline">Déconnexion</span>
+              <span className="xs:hidden sm:hidden">Quitter</span>
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8">
         {/* Carte d'en-tête de la boutique */}
-        <section className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6 shadow-2xs">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
-              <Store className="w-7 h-7" />
+        <section className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6 shadow-2xs">
+          <div className="flex items-start sm:items-center gap-3.5 sm:gap-4">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+              <Store className="w-6 h-6 sm:w-7 sm:h-7" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <h1 className="text-lg sm:text-2xl font-extrabold text-slate-900 truncate">
                   {nomBoutique}
                 </h1>
                 {user?.est_verifie && (
-                  <BadgeCheck className="w-5 h-5 text-emerald-600" />
+                  <BadgeCheck className="w-5 h-5 text-emerald-600 shrink-0" />
                 )}
               </div>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              <p className="text-xs sm:text-sm text-slate-500 mt-0.5 leading-relaxed">
                 Bienvenue <strong className="text-slate-800">{nomVendeur}</strong> — gérez votre catalogue et publiez vos nouveaux produits.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-center min-w-[110px]">
-              <p className="text-xs text-slate-500 font-medium">Produits</p>
-              <p className="text-xl font-extrabold text-slate-900">
+          <div className="grid grid-cols-2 sm:flex items-center gap-3 sm:gap-4 w-full md:w-auto">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-center sm:min-w-[110px]">
+              <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Produits</p>
+              <p className="text-lg sm:text-xl font-extrabold text-slate-900">
                 {produits.length}
               </p>
             </div>
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-center min-w-[110px]">
-              <p className="text-xs text-slate-500 font-medium">Stock total</p>
-              <p className="text-xl font-extrabold text-emerald-600">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-center sm:min-w-[110px]">
+              <p className="text-[11px] sm:text-xs text-slate-500 font-medium">Stock total</p>
+              <p className="text-lg sm:text-xl font-extrabold text-emerald-600">
                 {totalStock}
               </p>
             </div>
@@ -311,15 +309,15 @@ export default function VendeurDashboard() {
         </section>
 
         {/* Grille principale : Formulaire à gauche / Catalogue à droite */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
           {/* FORMULAIRE D'AJOUT DE PRODUIT */}
-          <section className="lg:col-span-5 bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 space-y-5 shadow-2xs">
+          <section className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-7 space-y-4 sm:space-y-5 shadow-2xs">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                 <PlusCircle className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-lg font-extrabold text-slate-900">
+                <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
                   Ajouter un produit
                 </h2>
                 <p className="text-xs text-slate-500">
@@ -388,7 +386,7 @@ export default function VendeurDashboard() {
               </div>
 
               {/* Prix & Stock */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label
                     htmlFor="prix"
@@ -406,7 +404,7 @@ export default function VendeurDashboard() {
                     value={formData.prix}
                     onChange={handleChange}
                     placeholder="Ex: 15000"
-                    className="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:bg-white focus:border-emerald-600 transition"
+                    className="w-full px-3.5 sm:px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:bg-white focus:border-emerald-600 transition"
                   />
                 </div>
 
@@ -427,7 +425,7 @@ export default function VendeurDashboard() {
                     value={formData.stock}
                     onChange={handleChange}
                     placeholder="Ex: 10"
-                    className="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:bg-white focus:border-emerald-600 transition"
+                    className="w-full px-3.5 sm:px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:bg-white focus:border-emerald-600 transition"
                   />
                 </div>
               </div>
@@ -470,8 +468,8 @@ export default function VendeurDashboard() {
                 />
 
                 <label className="flex items-center justify-center gap-2 w-full py-2.5 px-4 border border-dashed border-slate-300 hover:border-emerald-600 rounded-2xl text-xs font-semibold text-slate-600 hover:text-emerald-700 bg-slate-50/70 cursor-pointer transition">
-                  <ImageIcon className="w-4 h-4" />
-                  <span>
+                  <ImageIcon className="w-4 h-4 shrink-0" />
+                  <span className="truncate">
                     {imageFile
                       ? imageFile.name
                       : 'Ou choisir une image depuis votre appareil'}
@@ -509,11 +507,11 @@ export default function VendeurDashboard() {
           </section>
 
           {/* LISTE DES PRODUITS DU VENDEUR */}
-          <section className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 space-y-5 shadow-2xs">
+          <section className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-7 space-y-4 sm:space-y-5 shadow-2xs">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex items-center gap-2.5">
-                <Package className="w-5 h-5 text-slate-900" />
-                <h2 className="text-lg font-extrabold text-slate-900">
+                <Package className="w-5 h-5 text-slate-900 shrink-0" />
+                <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
                   Mes produits ({filteredProduits.length})
                 </h2>
               </div>
@@ -542,24 +540,24 @@ export default function VendeurDashboard() {
                 Chargement de vos produits...
               </div>
             ) : filteredProduits.length === 0 ? (
-              <div className="py-12 text-center space-y-2 border border-dashed border-slate-200 rounded-2xl">
+              <div className="py-12 px-4 text-center space-y-2 border border-dashed border-slate-200 rounded-2xl">
                 <Layers className="w-8 h-8 text-slate-300 mx-auto" />
                 <p className="text-sm font-semibold text-slate-700">
                   Aucun produit publié pour le moment
                 </p>
                 <p className="text-xs text-slate-400">
-                  Utilisez le formulaire à gauche pour ajouter votre premier produit.
+                  Utilisez le formulaire pour ajouter votre premier produit.
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {filteredProduits.map((produit) => (
                   <article
                     key={produit.id}
                     className="border border-slate-200 rounded-2xl overflow-hidden flex flex-col justify-between bg-slate-50/40"
                   >
                     <div>
-                      <div className="h-40 bg-slate-100 flex items-center justify-center overflow-hidden">
+                      <div className="h-32 sm:h-40 bg-slate-100 flex items-center justify-center overflow-hidden">
                         {produit.image_url ? (
                           <img
                             src={produit.image_url}
@@ -573,30 +571,30 @@ export default function VendeurDashboard() {
                         )}
                       </div>
 
-                      <div className="p-4 space-y-1.5">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700">
+                      <div className="p-2.5 sm:p-4 space-y-1 sm:space-y-1.5">
+                        <div className="flex flex-wrap items-center justify-between gap-1">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold bg-emerald-50 text-emerald-700">
                             {produit.type || 'Autres'}
                           </span>
-                          <span className="text-xs text-slate-500">
+                          <span className="text-[11px] sm:text-xs text-slate-500">
                             Stock : <strong>{produit.stock ?? 0}</strong>
                           </span>
                         </div>
 
-                        <h3 className="font-bold text-slate-900 line-clamp-1">
+                        <h3 className="text-xs sm:text-base font-bold text-slate-900 line-clamp-1">
                           {produit.nom}
                         </h3>
 
                         {produit.description && (
-                          <p className="text-xs text-slate-500 line-clamp-2">
+                          <p className="text-[11px] sm:text-xs text-slate-500 line-clamp-2">
                             {produit.description}
                           </p>
                         )}
                       </div>
                     </div>
 
-                    <div className="px-4 pb-4 pt-2 flex items-center justify-between border-t border-slate-100">
-                      <span className="text-sm font-extrabold text-slate-900">
+                    <div className="px-2.5 sm:px-4 pb-3 sm:pb-4 pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-t border-slate-100">
+                      <span className="text-xs sm:text-sm font-extrabold text-slate-900">
                         {Number(produit.prix || 0).toLocaleString()} FCFA
                       </span>
 
@@ -604,9 +602,9 @@ export default function VendeurDashboard() {
                         type="button"
                         onClick={() => handleDeleteProduit(produit.id)}
                         aria-label="Supprimer le produit"
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-red-600 hover:text-red-700 px-2.5 py-1.5 rounded-xl hover:bg-red-50 transition cursor-pointer"
+                        className="inline-flex items-center justify-center sm:justify-start gap-1 text-[11px] sm:text-xs font-semibold text-red-600 hover:text-red-700 px-2 py-1 rounded-xl hover:bg-red-50 transition cursor-pointer"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-3.5 h-3.5 shrink-0" />
                         <span>Supprimer</span>
                       </button>
                     </div>
