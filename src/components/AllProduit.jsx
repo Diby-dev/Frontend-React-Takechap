@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { ShoppingBag, Heart, Eye, BadgeCheck, Circle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Heart, Eye, BadgeCheck, Circle, RotateCcw } from 'lucide-react';
 
 const CATEGORIES = [
   'Vêtements',
@@ -12,7 +12,7 @@ const CATEGORIES = [
   'Autres',
 ];
 
-const normalizeCategory = (value = '') =>
+const normalizeText = (value = '') =>
   value
     .toString()
     .trim()
@@ -20,24 +20,61 @@ const normalizeCategory = (value = '') =>
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 
+const resolveCategoryKey = (produit) => {
+  const rawCat = produit.categorie || produit.type || '';
+  const normCat = normalizeText(rawCat);
+  const directMatch = CATEGORIES.find((cat) => normalizeText(cat) === normCat);
+  if (directMatch) return normalizeText(directMatch);
+
+  const haystack = normalizeText(`${produit.nom || ''} ${produit.description || ''}`);
+  const matched = CATEGORIES.find((cat) => haystack.includes(normalizeText(cat)));
+  return matched ? normalizeText(matched) : normalizeText('Autres');
+};
+
 export default function AllProduit({
   produits = [],
   loading = false,
-  onAcheter = () => {},
+  searchQuery = '',
+  selectedCategory = '',
   onSelectProduit = () => {},
+  onResetFiltres = () => {},
 }) {
+  const navigate = useNavigate();
+
+  const trimmedSearch = searchQuery.trim();
+  const normSearch = normalizeText(trimmedSearch);
+  const normSelectedCat = normalizeText(selectedCategory);
+
+  const titrePrincipal = (() => {
+    if (trimmedSearch && selectedCategory) {
+      return `Résultats pour « ${trimmedSearch} » — ${selectedCategory}`;
+    }
+    if (trimmedSearch) {
+      return `Résultats pour « ${trimmedSearch} »`;
+    }
+    if (selectedCategory) {
+      return selectedCategory;
+    }
+    return 'Tous les produits';
+  })();
+
+  const handleOpenProduit = (produit) => {
+    onSelectProduit(produit);
+    navigate(`/produit/${produit.id}`);
+  };
+
   if (loading) {
     return (
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-end mb-6">
-          <h2 className="inline-flex items-center gap-2.5 text-3xl sm:text-4xl font-extrabold text-slate-900 text-right">
+          <h2 className="inline-flex items-center gap-2.5 text-2xl sm:text-4xl font-extrabold text-slate-900 text-right">
             <Link
               to="/admin/login"
-              className="text-white hover:text-emerald-600 transition-colors duration-200"
+              className="text-slate-600 hover:text-emerald-600 transition-colors duration-200"
             >
               <Circle className="w-5 h-5" />
             </Link>
-            <span>Tous les produits</span>
+            <span>{titrePrincipal}</span>
           </h2>
         </div>
         <div className="py-12 text-center text-sm text-slate-500">
@@ -47,44 +84,67 @@ export default function AllProduit({
     );
   }
 
+  // Filtre par nom / description / boutique si une recherche est saisie
+  const filteredProduits = produits.filter((produit) => {
+    if (!normSearch) return true;
+    const nom = normalizeText(produit.nom || '');
+    const desc = normalizeText(produit.description || '');
+    const boutique = normalizeText(produit.vendeur?.nom_boutique || '');
+    return (
+      nom.includes(normSearch) ||
+      desc.includes(normSearch) ||
+      boutique.includes(normSearch)
+    );
+  });
+
   const grouped = CATEGORIES.reduce((acc, cat) => {
-    acc[normalizeCategory(cat)] = [];
+    acc[normalizeText(cat)] = [];
     return acc;
   }, {});
 
-  produits.forEach((produit) => {
-    const rawCat = produit.categorie || produit.type || '';
-    const normCat = normalizeCategory(rawCat);
-
-    if (grouped[normCat]) {
-      grouped[normCat].push(produit);
-    } else {
-      const haystack = normalizeCategory(`${produit.nom || ''} ${produit.description || ''}`);
-      const matched = CATEGORIES.find((cat) => haystack.includes(normalizeCategory(cat)));
-      const targetKey = matched ? normalizeCategory(matched) : normalizeCategory('Autres');
-      grouped[targetKey].push(produit);
-    }
+  filteredProduits.forEach((produit) => {
+    const key = resolveCategoryKey(produit);
+    grouped[key].push(produit);
   });
+
+  const categoriesToDisplay = selectedCategory
+    ? CATEGORIES.filter((cat) => normalizeText(cat) === normSelectedCat)
+    : CATEGORIES;
+
+  const hasFilter = Boolean(trimmedSearch || selectedCategory);
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-      {/* Titre aligné à droite avec l'icône cliquable vers l'admin devant */}
-      <div className="flex justify-end">
-        <h2 className="inline-flex items-center gap-2.5 text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight text-right">
+      {/* Titre dynamique aligné à droite + réinitialisation si filtre actif */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          {hasFilter && (
+            <button
+              type="button"
+              onClick={onResetFiltres}
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-emerald-700 hover:text-emerald-600 transition cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Voir tous les produits</span>
+            </button>
+          )}
+        </div>
+
+        <h2 className="inline-flex items-center gap-2.5 text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight text-right ml-auto">
           <Link
             to="/admin/login"
             className="text-slate-600 transition-colors duration-200"
           >
             <Circle className="w-5 h-5" />
           </Link>
-          <span>Tous les produits</span>
+          <span>{titrePrincipal}</span>
         </h2>
       </div>
 
-      {/* Sections alignées par catégorie */}
+      {/* Sections par catégorie */}
       <div className="space-y-10">
-        {CATEGORIES.map((category) => {
-          const items = grouped[normalizeCategory(category)] || [];
+        {categoriesToDisplay.map((category) => {
+          const items = grouped[normalizeText(category)] || [];
 
           return (
             <div key={category} className="space-y-4">
@@ -100,7 +160,9 @@ export default function AllProduit({
 
               {items.length === 0 ? (
                 <p className="text-xs text-slate-400 italic py-2">
-                  Aucun produit dans {category} pour le moment.
+                  {trimmedSearch
+                    ? `Aucun produit correspondant à « ${trimmedSearch} » dans ${category}.`
+                    : `Aucun produit dans ${category} pour le moment.`}
                 </p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -110,12 +172,15 @@ export default function AllProduit({
                       className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition flex flex-col justify-between"
                     >
                       <div>
-                        <div className="h-44 bg-slate-100 flex items-center justify-center overflow-hidden">
+                        <div
+                          onClick={() => handleOpenProduit(produit)}
+                          className="h-44 bg-slate-100 flex items-center justify-center overflow-hidden cursor-pointer"
+                        >
                           {produit.image_url ? (
                             <img
                               src={produit.image_url}
                               alt={produit.nom}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                             />
                           ) : (
                             <span className="text-xs text-slate-400">Aucune image</span>
@@ -124,11 +189,20 @@ export default function AllProduit({
 
                         <div className="p-4 space-y-1.5">
                           <div className="flex items-center gap-1 text-xs font-medium text-emerald-700">
-                            <span>{produit.vendeur?.nom_boutique || 'Boutique Takechap'}</span>
-                            {produit.vendeur?.est_verifie && <BadgeCheck className="w-3.5 h-3.5" />}
+                            <span>
+                              {produit.vendeur?.nom_boutique || 'Boutique Takechap'}
+                            </span>
+                            {produit.vendeur?.est_verifie && (
+                              <BadgeCheck className="w-3.5 h-3.5" />
+                            )}
                           </div>
 
-                          <h4 className="font-bold text-slate-900 line-clamp-1">{produit.nom}</h4>
+                          <h4
+                            onClick={() => handleOpenProduit(produit)}
+                            className="font-bold text-slate-900 line-clamp-1 cursor-pointer hover:text-emerald-700 transition"
+                          >
+                            {produit.nom}
+                          </h4>
 
                           {produit.description && (
                             <p className="text-xs text-slate-500 line-clamp-2">
@@ -138,25 +212,8 @@ export default function AllProduit({
                         </div>
                       </div>
 
-                      <div className="px-4 pb-4 pt-2 space-y-3">
-                        <div className="flex items-baseline justify-between">
-                          <span className="text-sm sm:text-base font-extrabold text-slate-900">
-                            {Number(produit.prix).toLocaleString()} FCFA
-                          </span>
-                          <span className="text-xs text-slate-500">Stock : {produit.stock}</span>
-                        </div>
-
+                      <div className="px-4 pb-4 pt-2 flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => onAcheter(produit.id)}
-                            disabled={produit.stock <= 0}
-                            className="flex-1 flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-300 text-white text-xs font-semibold py-2 px-3 rounded-xl transition cursor-pointer"
-                          >
-                            <ShoppingBag className="w-3.5 h-3.5" />
-                            <span>{produit.stock > 0 ? 'Acheter' : 'Épuisé'}</span>
-                          </button>
-
                           <button
                             type="button"
                             aria-label="Ajouter aux favoris"
@@ -167,12 +224,21 @@ export default function AllProduit({
 
                           <button
                             type="button"
-                            onClick={() => onSelectProduit(produit)}
+                            onClick={() => handleOpenProduit(produit)}
                             aria-label="Voir le détail"
                             className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition cursor-pointer"
                           >
                             <Eye className="w-3.5 h-3.5" />
                           </button>
+                        </div>
+
+                        <div className="text-right">
+                          <span className="block text-sm sm:text-base font-extrabold text-slate-900">
+                            {Number(produit.prix).toLocaleString()} FCFA
+                          </span>
+                          <span className="text-xs text-slate-500">
+                            Stock : {produit.stock}
+                          </span>
                         </div>
                       </div>
                     </article>

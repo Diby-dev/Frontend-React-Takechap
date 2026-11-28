@@ -7,7 +7,7 @@ export default function VendeurInscrip({ imageUrl = DEFAULT_IMAGE }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/vendeurinscp');
+    navigate('/VendeurInscrip');
   };
 
   return (
